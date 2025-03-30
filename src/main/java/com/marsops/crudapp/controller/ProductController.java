@@ -2,7 +2,14 @@ package com.marsops.crudapp.controller;
 
 import com.marsops.crudapp.model.Product;
 import com.marsops.crudapp.repository.ProductRepository;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -10,43 +17,69 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
 
-    // Dependency Injection: Spring injects an instance of ProductRepository
+    /**
+     * The repository for accessing product data.
+     */    
     private final ProductRepository repo;
 
-    public ProductController(ProductRepository repo) {
-        this.repo = repo;
+    /**
+     * Constructs a new ProductController with the specified repository.
+     *
+     * @param repo the product repository
+     */
+    public ProductController(final ProductRepository productRepository) {
+        this.repo = productRepository;
     }
+    
 
-    // GET /products: Returns a list of all products
+    /**
+     * Retrieves a list of all products.
+     *
+     * @return a list of products
+     */
     @GetMapping
     public List<Product> getAll() {
         return repo.findAll();
     }
 
-    // POST /products: Creates a new product
+    /**
+     * Creates a new product.
+     *
+     * @param product the product to create (must not be null)
+     * @return the created product
+     */
     @PostMapping
-    public Product create(@RequestBody Product product) {
-        // Log a fun message for our MarsOps mission!
+    public Product create(final @RequestBody Product product) {
         System.out.println("🚀 New product received: " + product.getName());
         return repo.save(product);
     }
 
-    // PUT /products/{id}: Updates an existing product
+    /**
+     * Updates an existing product.
+     *
+     * @param id the ID of the product to update
+     * @param updated the new product data
+     * @return the updated product
+     */
     @PutMapping("/{id}")
-    public Product update(@PathVariable Long id, @RequestBody Product updated) {
+    public Product update(final @PathVariable Long id, final @RequestBody Product updated) {
         return repo.findById(id)
-            .map(product -> {
-                product.setName(updated.getName());
-                product.setQuantity(updated.getQuantity());
-                System.out.println("🛰 Updating product: " + product.getName());
-                return repo.save(product);
-            })
-            .orElseThrow();  // Throws an exception if product not found.
+                   .map(product -> {
+                       product.setName(updated.getName());
+                       product.setQuantity(updated.getQuantity());
+                       System.out.println("🛰 Updating product: " + product.getName());
+                       return repo.save(product);
+                   })
+                   .orElseThrow();
     }
 
-    // DELETE /products/{id}: Deletes a product
+    /**
+     * Deletes the product with the specified ID.
+     *
+     * @param id the ID of the product to delete
+     */
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(final @PathVariable Long id) {
         System.out.println("🛑 Deleting product with id: " + id);
         repo.deleteById(id);
     }
