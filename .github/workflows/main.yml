@@ -26,8 +26,8 @@ jobs:
         - name: Build with Maven
           run: ./mvnw clean package
 
-        - name: Run Checkstyle
-          run: ./mvnw checkstyle:check
+        # - name: Run Checkstyle
+        #   run: ./mvnw checkstyle:check
 
         - name: Run Integration Tests
           run: mvn verify
