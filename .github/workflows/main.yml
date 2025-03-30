@@ -32,7 +32,7 @@ jobs:
         - name: Run Integration Tests
           run: mvn verify
 
-        - name: Build Docker Image
+        - name: Build Docker Img
           run: docker build -t ${{ secrets.DOCKER_USERNAME }}/mars-crud-app .
 
         - name: Log in to Docker Hub
